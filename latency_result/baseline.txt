@@ -1,0 +1,82 @@
+Initializing proposed memory blocks...
+Starting 10 consecutive profiling sweeps...
+
+================ RUN 1 DETAILS ================
+Average Inference Time : 21.25 ms
+Average NMS Time       : 1.81 ms
+RUN TOTAL LATENCY      : 23.06 ms
+Run Throughput         : 43.37 FPS
+======================================
+
+================ RUN 2 DETAILS ================
+Average Inference Time : 23.47 ms
+Average NMS Time       : 1.94 ms
+RUN TOTAL LATENCY      : 25.41 ms
+Run Throughput         : 39.35 FPS
+======================================
+
+================ RUN 3 DETAILS ================
+Average Inference Time : 26.28 ms
+Average NMS Time       : 2.12 ms
+RUN TOTAL LATENCY      : 28.40 ms
+Run Throughput         : 35.21 FPS
+======================================
+
+================ RUN 4 DETAILS ================
+Average Inference Time : 20.30 ms
+Average NMS Time       : 1.64 ms
+RUN TOTAL LATENCY      : 21.94 ms
+Run Throughput         : 45.58 FPS
+======================================
+
+================ RUN 5 DETAILS ================
+Average Inference Time : 21.50 ms
+Average NMS Time       : 1.86 ms
+RUN TOTAL LATENCY      : 23.36 ms
+Run Throughput         : 42.81 FPS
+======================================
+
+================ RUN 6 DETAILS ================
+Average Inference Time : 21.04 ms
+Average NMS Time       : 1.80 ms
+RUN TOTAL LATENCY      : 22.84 ms
+Run Throughput         : 43.79 FPS
+======================================
+
+================ RUN 7 DETAILS ================
+Average Inference Time : 20.45 ms
+Average NMS Time       : 1.68 ms
+RUN TOTAL LATENCY      : 22.14 ms
+Run Throughput         : 45.17 FPS
+======================================
+
+================ RUN 8 DETAILS ================
+Average Inference Time : 18.46 ms
+Average NMS Time       : 1.56 ms
+RUN TOTAL LATENCY      : 20.02 ms
+Run Throughput         : 49.95 FPS
+======================================
+
+================ RUN 9 DETAILS ================
+Average Inference Time : 17.48 ms
+Average NMS Time       : 1.48 ms
+RUN TOTAL LATENCY      : 18.96 ms
+Run Throughput         : 52.74 FPS
+======================================
+
+================ RUN 10 DETAILS ================
+Average Inference Time : 17.63 ms
+Average NMS Time       : 1.41 ms
+RUN TOTAL LATENCY      : 19.04 ms
+Run Throughput         : 52.51 FPS
+======================================
+
+=============================================
+     FINAL SUSTAINED ACADEMIC METRICS        
+  (Sustained State Mean calculated from Runs 5-10)  
+=============================================
+Sustained Inference Latency : 19.43 ms
+Sustained NMS Latency       : 1.63 ms
+Sustained Total Latency     : 21.06 ms
+Sustained Throughput        : 47.83 FPS
+=============================================

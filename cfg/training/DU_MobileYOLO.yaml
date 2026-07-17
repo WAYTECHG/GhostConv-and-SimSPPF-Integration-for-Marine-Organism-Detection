@@ -1,0 +1,93 @@
+# parameters
+nc: 4  # number of classes
+depth_multiple: 1.0  # model depth multiple
+width_multiple: 1.0  # layer channel multiple
+mobilevit_backbone: True
+# anchors
+anchors:
+  - [10,13, 16,30, 33,23]  # P3/8
+  - [30,61, 62,45, 59,119]  # P4/16
+  - [116,90, 156,198, 373,326]  # P5/32
+
+# yolov7-tiny backbone
+backbone:
+  # [from, number, module, args] c2, k=1, s=1, p=None, g=1, act=True
+  [[-1, 1, Conv, [16, 3, 2, None, 1]],  # 0-P1/2
+   [-1, 1, InvertedResidual, [32, 1, 2]], # 1
+
+   [-1, 1, InvertedResidual, [48, 2, 2]], # 2 -P2/4
+   [-1, 2, InvertedResidual, [48, 1, 2]], # 3
+
+   [ -1, 1, InvertedResidual, [64, 2, 2]], # 4
+   [ -1, 1, MobileViTBlockv2, [64, 96, 2, 2, 0.0, 0.0, 0.0, 2, 2, 3, 1]], # 5  P3/8
+
+   [ -1, 1, InvertedResidual, [80, 2, 2 ] ], # 6
+   [ -1, 1, MobileViTBlockv2, [80, 120, 2, 4, 0.0, 0.0, 0.0, 2, 2, 3, 1]], # 7  P4/16
+
+   [ -1, 1, InvertedResidual, [96, 2, 2 ] ], # 8
+   [ -1, 1, MobileViTBlockv2, [96, 144, 2, 2, 0.0, 0.0, 0.0, 2, 2, 3, 1]], # 9  P5/32
+  ]
+
+# yolov7-tiny head
+head:
+  [[-1, 1, Conv, [256, 1, 1, None, 1]],
+   [-2, 1, Conv, [256, 1, 1, None, 1]],
+   [-1, 1, SP, [5]],
+   [-2, 1, SP, [9]],
+   [-3, 1, SP, [13]],
+   [[-1, -2, -3, -4], 1, Concat, [1]],
+   [-1, 1, Conv, [256, 1, 1, None, 1]],
+   [[-1, -7], 1, Concat, [1]],
+   [-1, 1, Conv, [256, 1, 1, None, 1]],  # 18
+  
+   [-1, 1, DeformConv2dPack, [128, 3, 1, 1, 1]],
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']],
+   [7, 1, Conv, [128, 1, 1, None, 1]], # route backbone P4
+   [[-1, -2], 1, Concat, [1]],
+   
+   [-1, 1, Conv, [64, 1, 1, None, 1]],
+   [-2, 1, Conv, [64, 1, 1, None, 1]],
+   [-1, 1, Conv, [64, 3, 1, None, 1]],
+   [-1, 1, Conv, [64, 3, 1, None, 1]],
+   [[-1, -2, -3, -4], 1, Concat, [1]],
+   [-1, 1, Conv, [128, 1, 1, None, 1]],  # 28
+  
+   [-1, 1, DeformConv2dPack, [64, 3, 1, 1, 1]],
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']],
+   [5, 1, Conv, [64, 1, 1, None, 1]], # route backbone P3
+   [[-1, -2], 1, Concat, [1]],
+   
+   [-1, 1, Conv, [32, 1, 1, None, 1]],
+   [-2, 1, Conv, [32, 1, 1, None, 1]],
+   [-1, 1, Conv, [32, 3, 1, None, 1]],
+   [-1, 1, Conv, [32, 3, 1, None, 1]],
+   [[-1, -2, -3, -4], 1, Concat, [1]],
+   [-1, 1, Conv, [64, 1, 1, None, 1]],  # 38
+   
+   [-1, 1, Conv, [128, 3, 2, None, 1]],
+   [[-1, 28], 1, Concat, [1]],
+   
+   [-1, 1, Conv, [64, 1, 1, None, 1]],
+   [-2, 1, Conv, [64, 1, 1, None, 1]],
+   [-1, 1, Conv, [64, 3, 1, None, 1]],
+   [-1, 1, Conv, [64, 3, 1, None, 1]],
+   [[-1, -2, -3, -4], 1, Concat, [1]],
+   [-1, 1, Conv, [128, 1, 1, None, 1]],  # 46
+   
+   [-1, 1, Conv, [256, 3, 2, None, 1]],
+   [[-1, 18], 1, Concat, [1]],
+   
+   [-1, 1, Conv, [128, 1, 1, None, 1]],
+   [-2, 1, Conv, [128, 1, 1, None, 1]],
+   [-1, 1, Conv, [128, 3, 1, None, 1]],
+   [-1, 1, Conv, [128, 3, 1, None, 1]],
+   [[-1, -2, -3, -4], 1, Concat, [1]],
+   [-1, 1, Conv, [256, 1, 1, None, 1]],  # 54
+      
+   [38, 1, Conv, [128, 3, 1, None, 1]],
+   [46, 1, Conv, [256, 3, 1, None, 1]],
+   [54, 1, Conv, [512, 3, 1, None, 1]],
+
+   [[55,56,57], 1, IDetect, [nc, anchors]],   # Detect(P3, P4, P5)
+  ]
+

@@ -1,0 +1,94 @@
+nc: 4
+depth_multiple: 1.0
+width_multiple: 1.0
+mobilevit_backbone: True
+
+anchors:
+  - [10,13, 16,30, 33,23]   # P3/8
+  - [30,61, 62,45, 59,119]  # P4/16
+  - [116,90, 156,198, 373,326]  # P5/32
+
+backbone:
+  [[-1, 1, Conv, [16, 3, 2, None, 1]], 
+   [-1, 1, InvertedResidual, [32, 1, 2]],
+
+   [-1, 1, InvertedResidual, [48, 2, 2]], 
+   [-1, 2, InvertedResidual, [48, 1, 2]],
+
+   [-1, 1, InvertedResidual, [64, 2, 2]], 
+   [-1, 1, MobileViTBlockv2, [64, 96, 2, 2, 0.0, 0.0, 0.0, 2, 2, 3, 1]],
+
+   [-1, 1, InvertedResidual, [80, 2, 2]], 
+   [-1, 1, MobileViTBlockv2, [80, 120, 2, 4, 0.0, 0.0, 0.0, 2, 2, 3, 1]],
+
+   [-1, 1, InvertedResidual, [96, 2, 2]], 
+   [-1, 1, MobileViTBlockv2, [96, 144, 2, 2, 0.0, 0.0, 0.0, 2, 2, 3, 1]],
+  ]
+
+head:
+  # ── Neck Bottleneck: SimSPPF forced to ReLU ───────────────────────────────
+  [[-1, 1, Conv, [256, 1, 1, None, 1]],             # 10 
+   [-2, 1, Conv, [256, 1, 1, None, 1]],             # 11 
+   [-1, 1, SimSPPF, [256]],                         # 12 SimSPPF explicit ReLU override
+   [[-1, -2], 1, Concat, [1]],                      # 13 
+   [-1, 1, Conv, [256, 1, 1, None, 1]],             # 14 
+
+   # ── Top-down: P5→P4 ───────────────────────────────────────────────────────
+   [-1, 1, DeformConv2dPack, [128, 3, 1, 1, 1]],    # 15 DU (unchanged)
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']],      # 16 
+   [7, 1, Conv, [128, 1, 1, None, 1]],              # 17 lateral P4
+   [[-1, -2], 1, Concat, [1]],                      # 18 
+
+   # ── GhostMultiConcat at P4 Junction (GhostConv defaults back to SiLU) ────
+   [-1, 1, Conv, [64, 1, 1, None, 1]],              # 19
+   [-2, 1, Conv, [64, 1, 1, None, 1]],              # 20
+   [-1, 1, GhostConv, [64, 3, 1]],                  # 21 Defaults to SiLU
+   [-1, 1, GhostConv, [64, 3, 1]],                  # 22 Defaults to SiLU
+   [[-1, -2, -3, -4], 1, Concat, [1]],              # 23
+   [-1, 1, Conv, [128, 1, 1, None, 1]],             # 24 
+
+   # ── Top-down: P4→P3 ───────────────────────────────────────────────────────
+   [-1, 1, DeformConv2dPack, [64, 3, 1, 1, 1]],     # 25 DU (unchanged)
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']],      # 26 
+   [5, 1, Conv, [64, 1, 1, None, 1]],               # 27 lateral P3
+   [[-1, -2], 1, Concat, [1]],                      # 28 
+
+   # ── GhostMultiConcat at P3 Junction ──────────────────────────────────────
+   [-1, 1, Conv, [32, 1, 1, None, 1]],              # 29
+   [-2, 1, Conv, [32, 1, 1, None, 1]],              # 30
+   [-1, 1, GhostConv, [32, 3, 1]],                  # 31 Defaults to SiLU
+   [-1, 1, GhostConv, [32, 3, 1]],                  # 32 Defaults to SiLU
+   [[-1, -2, -3, -4], 1, Concat, [1]],              # 33
+   [-1, 1, Conv, [64, 1, 1, None, 1]],              # 34 
+
+   # ── Bottom-up: P3→P4 ──────────────────────────────────────────────────────
+   [-1, 1, Conv, [128, 3, 2, None, 1]],             # 35 Downsample
+   [[-1, 24], 1, Concat, [1]],                      # 36 Fusion
+
+   # ── GhostMultiConcat at P4 Bottom-up ──────────────────────────────────────
+   [-1, 1, Conv, [64, 1, 1, None, 1]],              # 37
+   [-2, 1, Conv, [64, 1, 1, None, 1]],              # 38
+   [-1, 1, GhostConv, [64, 3, 1]],                  # 39 Defaults to SiLU
+   [-1, 1, GhostConv, [64, 3, 1]],                  # 40 Defaults to SiLU
+   [[-1, -2, -3, -4], 1, Concat, [1]],              # 41
+   [-1, 1, Conv, [128, 1, 1, None, 1]],             # 42 
+
+   # ── Bottom-up: P4→P5 ──────────────────────────────────────────────────────
+   [-1, 1, Conv, [256, 3, 2, None, 1]],             # 43 Downsample
+   [[-1, 14], 1, Concat, [1]],                      # 44 Fusion with neck bottleneck
+
+   # ── GhostMultiConcat at P5 Bottom-up ──────────────────────────────────────
+   [-1, 1, Conv, [128, 1, 1, None, 1]],             # 45
+   [-2, 1, Conv, [128, 1, 1, None, 1]],             # 46
+   [-1, 1, GhostConv, [128, 3, 1]],                 # 47 Defaults to SiLU
+   [-1, 1, GhostConv, [128, 3, 1]],                 # 48 Defaults to SiLU
+   [[-1, -2, -3, -4], 1, Concat, [1]],              # 49
+   [-1, 1, Conv, [256, 1, 1, None, 1]],             # 50 
+
+   # ── Detection Heads ───────────────────────────────────────────────────────
+   [34, 1, Conv, [128, 3, 1, None, 1]],             # 51 P3 head
+   [42, 1, Conv, [256, 3, 1, None, 1]],             # 52 P4 head
+   [50, 1, Conv, [512, 3, 1, None, 1]],             # 53 P5 head
+
+   [[51, 52, 53], 1, IDetect, [nc, anchors]],       # 54 
+  ]

@@ -1,0 +1,96 @@
+nc: 4
+depth_multiple: 1.0
+width_multiple: 1.0
+mobilevit_backbone: True
+
+# Identical anchors to baseline — do not change
+anchors:
+  - [10,13, 16,30, 33,23]       # P3/8
+  - [30,61, 62,45, 59,119]      # P4/16
+  - [116,90, 156,198, 373,326]  # P5/32
+
+# ── Backbone: identical to baseline ──────────────────────────────────────────
+backbone:
+  [[-1, 1, Conv, [16, 3, 2, None, 1]],                                          # 0
+   [-1, 1, InvertedResidual, [32, 1, 2]],                                       # 1
+   [-1, 1, InvertedResidual, [48, 2, 2]],                                       # 2
+   [-1, 2, InvertedResidual, [48, 1, 2]],                                       # 3
+   [-1, 1, InvertedResidual, [64, 2, 2]],                                       # 4
+   [-1, 1, MobileViTBlockv2, [64, 96, 2, 2, 0.0, 0.0, 0.0, 2, 2, 3, 1]],     # 5  P3/8
+   [-1, 1, InvertedResidual, [80, 2, 2]],                                       # 6
+   [-1, 1, MobileViTBlockv2, [80, 120, 2, 4, 0.0, 0.0, 0.0, 2, 2, 3, 1]],    # 7  P4/16
+   [-1, 1, InvertedResidual, [96, 2, 2]],                                       # 8
+   [-1, 1, MobileViTBlockv2, [96, 144, 2, 2, 0.0, 0.0, 0.0, 2, 2, 3, 1]],    # 9  P5/32
+  ]
+
+head:
+  # ── Neck bottleneck: ORIGINAL SP×3 (unchanged) ───────────────────────────
+  [[-1, 1, Conv, [256, 1, 1, None, 1]],          # 10
+   [-2, 1, Conv, [256, 1, 1, None, 1]],          # 11
+   [-1, 1, SP, [5]],                              # 12  original SP (NOT SimSPPF)
+   [-2, 1, SP, [9]],                              # 13  original SP
+   [-3, 1, SP, [13]],                             # 14  original SP
+   [[-1, -2, -3, -4], 1, Concat, [1]],           # 15
+   [-1, 1, Conv, [256, 1, 1, None, 1]],          # 16
+   [[-1, -7], 1, Concat, [1]],                   # 17
+   [-1, 1, Conv, [256, 1, 1, None, 1]],          # 18  neck output (same as baseline layer 18)
+
+   # ── Top-down: P5 → P4 ────────────────────────────────────────────────────
+   [-1, 1, DeformConv2dPack, [128, 3, 1, 1, 1]], # 19  DU (unchanged)
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']],   # 20
+   [7,  1, Conv, [128, 1, 1, None, 1]],          # 21  lateral from backbone P4
+   [[-1, -2], 1, Concat, [1]],                   # 22
+
+   # Multi-Concat at P4: [B] GhostConv replaces inner Conv(3×3)
+   [-1, 1, Conv, [64, 1, 1, None, 1]],           # 23
+   [-2, 1, Conv, [64, 1, 1, None, 1]],           # 24
+   [-1, 1, GhostConv, [64, 3, 1]],               # 25  [B] GhostConv
+   [-1, 1, GhostConv, [64, 3, 1]],               # 26  [B] GhostConv
+   [[-1, -2, -3, -4], 1, Concat, [1]],           # 27
+   [-1, 1, Conv, [128, 1, 1, None, 1]],          # 28  P4 feature
+
+   # ── Top-down: P4 → P3 ────────────────────────────────────────────────────
+   [-1, 1, DeformConv2dPack, [64, 3, 1, 1, 1]], # 29  DU (unchanged)
+   [-1, 1, nn.Upsample, [None, 2, 'nearest']],   # 30
+   [5,  1, Conv, [64, 1, 1, None, 1]],           # 31  lateral from backbone P3
+   [[-1, -2], 1, Concat, [1]],                   # 32
+
+   # Multi-Concat at P3: [B] GhostConv
+   [-1, 1, Conv, [32, 1, 1, None, 1]],           # 33
+   [-2, 1, Conv, [32, 1, 1, None, 1]],           # 34
+   [-1, 1, GhostConv, [32, 3, 1]],               # 35  [B] GhostConv
+   [-1, 1, GhostConv, [32, 3, 1]],               # 36  [B] GhostConv
+   [[-1, -2, -3, -4], 1, Concat, [1]],           # 37
+   [-1, 1, Conv, [64, 1, 1, None, 1]],           # 38  P3 output
+
+   # ── Bottom-up: P3 → P4 ───────────────────────────────────────────────────
+   [-1, 1, Conv, [128, 3, 2, None, 1]],          # 39  downsample
+   [[-1, 28], 1, Concat, [1]],                   # 40
+
+   # Multi-Concat: [B] GhostConv
+   [-1, 1, Conv, [64, 1, 1, None, 1]],           # 41
+   [-2, 1, Conv, [64, 1, 1, None, 1]],           # 42
+   [-1, 1, GhostConv, [64, 3, 1]],               # 43  [B] GhostConv
+   [-1, 1, GhostConv, [64, 3, 1]],               # 44  [B] GhostConv
+   [[-1, -2, -3, -4], 1, Concat, [1]],           # 45
+   [-1, 1, Conv, [128, 1, 1, None, 1]],          # 46  P4 output
+
+   # ── Bottom-up: P4 → P5 ───────────────────────────────────────────────────
+   [-1, 1, Conv, [256, 3, 2, None, 1]],          # 47  downsample
+   [[-1, 18], 1, Concat, [1]],                   # 48
+
+   # Multi-Concat: [B] GhostConv
+   [-1, 1, Conv, [128, 1, 1, None, 1]],          # 49
+   [-2, 1, Conv, [128, 1, 1, None, 1]],          # 50
+   [-1, 1, GhostConv, [128, 3, 1]],              # 51  [B] GhostConv
+   [-1, 1, GhostConv, [128, 3, 1]],              # 52  [B] GhostConv
+   [[-1, -2, -3, -4], 1, Concat, [1]],           # 53
+   [-1, 1, Conv, [256, 1, 1, None, 1]],          # 54  P5 output
+
+   # ── Detection heads: identical to baseline ────────────────────────────────
+   [38, 1, Conv, [128, 3, 1, None, 1]],          # 55  P3 head
+   [46, 1, Conv, [256, 3, 1, None, 1]],          # 56  P4 head
+   [54, 1, Conv, [512, 3, 1, None, 1]],          # 57  P5 head
+
+   [[55, 56, 57], 1, IDetect, [nc, anchors]],    # 58  Detect(P3, P4, P5)
+  ]
