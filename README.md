@@ -1,4 +1,4 @@
-# AIT2309246 Computer Vision Final Project
+# Computer Vision
 
 ## Project Title
 
@@ -31,7 +31,7 @@ The proposed model modifies selected computationally redundant parts of DU-Mobil
 The submitted zip file contains source code and configuration files only. Dataset images, training outputs, and model weight files are intentionally excluded.
 
 ```text
-AIT2309246/
+<Your_Folder>/
 ├── cfg/
 │   └── training/
 │       ├── DU_MobileYOLO.yaml
@@ -153,7 +153,7 @@ pip install -r requirements.txt
 Before running commands, enter the project folder:
 
 ```powershell
-cd "path\to\AIT2309246"
+cd "path\to\<Your_Folder>"
 ```
 
 ---
@@ -176,13 +176,13 @@ For proposed and ablation variants, use `run_experiment.py`. The runner temporar
 
 | Variant Name               | Description                              | YAML File                       |
 | -------------------------- | ---------------------------------------- | ------------------------------- |
-| `baseline`                 | Retrained DU-MobileYOLO baseline         | `DU_MobileYOLO.yaml`            |
-| `proposed_ghost`           | GhostConv ablation                       | `proposed_ghost.yaml`           |
-| `proposed_sppf`            | SPPF ablation                            | `proposed_sppf.yaml`            |
-| `proposed_simsppf`         | SimSPPF ablation                         | `proposed_simsppf.yaml`         |
-| `proposed_ghost_sppf`      | GhostConv + SPPF ablation                | `proposed_ghost_sppf.yaml`      |
-| `proposed_ghost_simsppf`   | Final proposed GhostConv + SimSPPF model | `proposed_ghost_simsppf.yaml`   |
-| `yolov7_tiny`              | Retrained YOLOv7-tiny comparison model   | `yolov7-tiny.yaml`              |
+| `baseline`               | Retrained DU-MobileYOLO baseline         | `DU_MobileYOLO.yaml`          |
+| `proposed_ghost`         | GhostConv ablation                       | `proposed_ghost.yaml`         |
+| `proposed_sppf`          | SPPF ablation                            | `proposed_sppf.yaml`          |
+| `proposed_simsppf`       | SimSPPF ablation                         | `proposed_simsppf.yaml`       |
+| `proposed_ghost_sppf`    | GhostConv + SPPF ablation                | `proposed_ghost_sppf.yaml`    |
+| `proposed_ghost_simsppf` | Final proposed GhostConv + SimSPPF model | `proposed_ghost_simsppf.yaml` |
+| `yolov7_tiny`            | Retrained YOLOv7-tiny comparison model   | `yolov7-tiny.yaml`            |
 
 List all supported variants:
 
@@ -338,19 +338,7 @@ Latency was profiled on an NVIDIA GeForce RTX 4060 Laptop GPU using a synthetic 
 
 ---
 
-## Submission Notes
-
-- Dataset images are not included in the submitted zip.
-- Training output folders such as `runs/` are not included in the submitted zip.
-- Model weight files such as `.pt` and `.pth` are not included in the submitted zip.
-- Model weights are kept locally and can be provided later if requested by the lecturer.
-- If model weights are not available locally, models must be retrained before testing or detection.
-
----
-
 ## Author
 
-Wilbert Andrew Yonathan  
-AIT2309246  
-Xiamen University Malaysia  
-AIT304 Advanced Issues of Artificial Intelligence (Computer Vision)
+Wilbert Andrew Yonathan
+Xiamen University Malaysia
