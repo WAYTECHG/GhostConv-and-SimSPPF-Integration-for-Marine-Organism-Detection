@@ -1,4 +1,11 @@
-# Computer Vision
+# Marine Organism Detection — GhostConv + SimSPPF
+
+
+**Project author and maintainer:** [Wilbert Andrew Yonathan (WAYTECHG)](https://github.com/WAYTECHG)  
+**Institution:** Xiamen University Malaysia  
+**Academic context:** AIT304 — Advanced Issues of Artificial Intelligence (Computer Vision)
+
+This repository presents my adaptation of DU-MobileYOLO, the model comparisons and ablation experiments carried out for this project, and a linked interactive demonstration. My contribution focuses on integrating and evaluating GhostConv and SimSPPF within the existing detector. The underlying DU-MobileYOLO architecture and the original Ghost and SimSPPF concepts are credited to their respective authors.
 
 ## Project Title
 
@@ -22,21 +29,48 @@ Try the interactive marine detection demo:
 
 [🚀 Open Live Demo](https://huggingface.co/spaces/Wizzas/Marine-Object-Detection)
 
+## My Contributions
+
+| Area | Contribution in this project |
+| --- | --- |
+| Model adaptation | Integrated GhostConv into selected 3×3 convolution layers in the Multi-Concat blocks and replaced the original pooling structure with SimSPPF. |
+| Preserved architecture | Retained the existing Deformable Upsampling mechanism rather than claiming it as a new component developed for this project. |
+| Baseline comparisons | Retrained and evaluated DU-MobileYOLO and YOLOv7-tiny for comparison on the project's URPC2020 split. |
+| Ablation study | Evaluated GhostConv, SPPF, SimSPPF, and their selected combinations to examine the effects of individual modifications. |
+| Evaluation | Compared detection accuracy, precision, recall, parameter count, GFLOPs, and measured latency; documented both improvements and trade-offs. |
+| Experiment workflow | Organized variant-specific configurations, an experiment runner, supporting scripts, and documented training, testing, and detection commands. |
+| Interactive demonstration | Prepared and deployed a marine detection demo on Hugging Face Spaces for visitors to explore the project's detection workflow. |
+
+The final proposed configuration is **DU-MobileYOLO + GhostConv + SimSPPF**. The contribution is the adaptation, integration, and experimental evaluation of established components in this detector; this project does not claim to have invented DU-MobileYOLO, Ghost modules, or SimSPPF.
+
+## Upstream Work and Acknowledgements
+
+This project builds on the following work:
+
+- **[DU-MobileYOLO](https://github.com/ZERO-SPACE-X/DU-MobileYOLO):** the base marine organism detector and its Deformable Upsampling mechanism. The upstream repository is distributed under GPL-3.0.
+- **[YOLOv7](https://github.com/WongKinYiu/yolov7):** the detector implementation ecosystem and the YOLOv7-tiny comparison model.
+- **[GhostNet: More Features From Cheap Operations](https://openaccess.thecvf.com/content_CVPR_2020/html/Han_GhostNet_More_Features_From_Cheap_Operations_CVPR_2020_paper.html), Han et al., CVPR 2020:** the original Ghost module concept used as the basis for GhostConv.
+- **[YOLOv6 SimSPPF implementation](https://github.com/meituan/YOLOv6/blob/main/yolov6/layers/common.py):** a reference for simplified spatial pyramid pooling with ReLU activation.
+- **URPC2020:** the underwater object detection dataset used for the project. The distribution used in these experiments is linked in the Dataset section.
+
+Credit for these upstream architectures, concepts, code, and dataset remains with their original authors. My project-specific changes and evaluation are described in the contribution table above.
+
+---
+
 ## Main Idea
 
 The proposed model modifies selected computationally redundant parts of DU-MobileYOLO:
 
-1. **SimSPPF** replaces the original parallel spatial pyramid pooling structure with a simplified SPPF-style sequential pooling module.
+1. **SimSPPF** replaces the original parallel spatial pyramid pooling structure with a simplified SPPF-style sequential pooling module using ReLU activation.
 2. **GhostConv** replaces selected standard 3×3 convolution layers inside Multi-Concat blocks to reduce parameter cost.
 3. **Deformable Upsampling (DU)** is kept unchanged to preserve spatial alignment during feature fusion.
 
 ---
 
 
-
 ## Package Structure
 
-The submitted  file contains source code and configuration files only. Dataset images, training outputs, and model weight files are intentionally excluded.
+This research package contains source code and configuration files. Dataset images, training output folders, and model weights are excluded. The live demo is hosted separately on Hugging Face Spaces.
 
 ```text
 <Your_Folder>/
@@ -54,14 +88,6 @@ The submitted  file contains source code and configuration files only. Dataset i
 │   ├── urpc2020.yaml
 │   └── hyp.scratch.p5.yaml
 │
-├── latency_result/
-│   ├── baseline.txt
-│   ├── proposed_ghost.txt
-│   ├── proposed_sppf.txt
-│   ├── proposed_simsppf.txt
-│   ├── proposed_ghost_sppf.txt
-│   └── proposed_ghost_simsppf.txt
-│
 ├── models/
 │   ├── common.py
 │   ├── common_ghost.py
@@ -73,7 +99,9 @@ The submitted  file contains source code and configuration files only. Dataset i
 │   ├── yolo.py
 │   ├── BaseLayers.py
 │   ├── mobilevit_v2.py
-│   └── mobilevit_v2_block.py
+│   ├── mobilevit_v2_block.py
+│   ├── linear_attention.py
+│   └── common_proposed_relu.py
 │
 ├── utils/
 ├── scripts/
@@ -88,7 +116,7 @@ The submitted  file contains source code and configuration files only. Dataset i
 └── README.md
 ```
 
-The following folders/files are not included in the zip:
+The following generated or local files are excluded from this research package:
 
 ```text
 runs/
@@ -139,7 +167,7 @@ The project uses the Kaggle train/validation/test split:
 | Validation |  1,200 |          1,153 |                47 |
 | Test       |    800 |            775 |                25 |
 
-All images are resized to **640 × 640** during training and evaluation.
+The configured training and evaluation input size is **640 × 640**.
 
 ---
 
@@ -332,7 +360,19 @@ The final **GhostConv + SimSPPF** model achieves the highest mAP@0.5 among the t
 
 ---
 
-## Author
+## Author and Project Attribution
 
-Wilbert Andrew Yonathan
-Xiamen University Malaysia
+**Wilbert Andrew Yonathan**  
+AI Engineering student, Xiamen University Malaysia  
+GitHub: [WAYTECHG](https://github.com/WAYTECHG)  
+Hugging Face demo: [Marine Object Detection](https://huggingface.co/spaces/Wizzas/Marine-Object-Detection)
+
+When referring to this project's adaptations, experiment results, documentation, or demonstration, please credit Wilbert Andrew Yonathan and link to the original project repository. Credit DU-MobileYOLO and other upstream work separately where relevant.
+
+### Suggested Attribution
+
+Wilbert Andrew Yonathan. *Integration of GhostConv and SimSPPF into a Deformable-Upsampling Lightweight Detector for Marine Organism Detection*. Xiamen University Malaysia, AIT304 Computer Vision project. Project author: [WAYTECHG](https://github.com/WAYTECHG).
+
+### Licensing and Reuse
+
+This attribution statement does not replace or override the repository's applicable software license or the licenses of upstream components. Preserve the relevant copyright and license notices when reusing code, and clearly identify any changes you make. Acknowledging this project's contributions does not imply that the upstream detector or its original components were created by this project's author.
