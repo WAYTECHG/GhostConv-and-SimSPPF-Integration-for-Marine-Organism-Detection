@@ -16,6 +16,12 @@ The `GhostConv + SPPF` configuration is included only as an ablation variant, no
 
 ---
 
+## Live Demo
+
+Try the interactive marine detection demo:
+
+[🚀 Open Live Demo](https://huggingface.co/spaces/Wizzas/Marine-Object-Detection)
+
 ## Main Idea
 
 The proposed model modifies selected computationally redundant parts of DU-MobileYOLO:
@@ -26,9 +32,11 @@ The proposed model modifies selected computationally redundant parts of DU-Mobil
 
 ---
 
-## Submitted Package Structure
 
-The submitted zip file contains source code and configuration files only. Dataset images, training outputs, and model weight files are intentionally excluded.
+
+## Package Structure
+
+The submitted  file contains source code and configuration files only. Dataset images, training outputs, and model weight files are intentionally excluded.
 
 ```text
 <Your_Folder>/
@@ -80,7 +88,7 @@ The submitted zip file contains source code and configuration files only. Datase
 └── README.md
 ```
 
-The following folders/files are not included in the submitted zip:
+The following folders/files are not included in the zip:
 
 ```text
 runs/
