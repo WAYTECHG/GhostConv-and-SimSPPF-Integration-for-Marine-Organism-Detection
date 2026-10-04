@@ -314,20 +314,6 @@ The proposed model improves mAP@0.5, recall, parameter count, GFLOPs, and latenc
 
 The final **GhostConv + SimSPPF** model achieves the highest mAP@0.5 among the tested ablation variants while maintaining the lowest parameter count and GFLOPs.
 
----
-
-## Latency Evaluation
-
-Latency files are included in:
-
-```text
-latency_result/
-```
-
-Latency was profiled on an NVIDIA GeForce RTX 4060 Laptop GPU using a synthetic 640 × 640 input with batch size 1. Each model was warmed up for 30 iterations and evaluated over 10 runs with 100 iterations per run. The reported value is the sustained average from Runs 5–10, including inference and NMS time.
-
----
-
 ## Reproducing the Results
 
 1. Download the URPC2020 dataset using the link in `DatasetLink.txt`.
