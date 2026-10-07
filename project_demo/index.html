@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#081f2a">
+  <meta name="description" content="Explore WAYTECHG, a lightweight marine organism detection research project. Compare six model variants and try an illustrated detection simulation.">
+  <title>WAYTECHG — Marine Organism Detection</title>
+  <link rel="icon" href="/static/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/navigation.js?v=20261005" defer></script>
+  <script id="app-config" type="application/json">{"classNames": ["holothurian", "echinus", "scallop", "starfish"], "contactEmail": "30587wilbertandrewyonathan@gmail.com", "formEndpoint": "", "inference": {"confidenceThreshold": 0.5, "device": null, "error": null, "inputSize": 640, "iouThreshold": null, "mode": "simulation", "models": {}, "ready": true}, "maxFileBytes": 8388608, "metrics": {"models": [{"class_ap": [74.44, 88.04, 59.85, 74.61], "color": "#496b9c", "fps": 47.83, "gflops": 12.1, "id": "baseline", "label": "DU-MobileYOLO", "latency": 21.06, "map50": 74.23, "map5095": 41.01, "parameters": 4.7, "precision": 80.95, "recall": 66.34, "role": "baseline", "short_label": "Baseline"}, {"class_ap": [73.47, 87.88, 61.66, 73.13], "color": "#75a9c1", "fps": 49.96, "gflops": 12.0, "id": "proposed_sppf", "label": "+ SPPF", "latency": 20.04, "map50": 74.04, "map5095": 40.86, "parameters": 4.6, "precision": 75.78, "recall": 68.7, "role": "ablation", "short_label": "SPPF"}, {"class_ap": [75.09, 87.09, 61.99, 76.76], "color": "#529ca4", "fps": 50.18, "gflops": 12.0, "id": "proposed_simsppf", "label": "+ SimSPPF", "latency": 19.96, "map50": 75.23, "map5095": 40.77, "parameters": 4.6, "precision": 78.13, "recall": 68.89, "role": "ablation", "short_label": "SimSPPF"}, {"class_ap": [75.03, 87.55, 61.32, 74.57], "color": "#499783", "fps": 49.54, "gflops": 11.6, "id": "proposed_ghost", "label": "+ GhostConv", "latency": 20.2, "map50": 74.62, "map5095": 40.69, "parameters": 4.47, "precision": 79.29, "recall": 67.9, "role": "ablation", "short_label": "GhostConv"}, {"class_ap": [75.29, 87.43, 62.37, 76.19], "color": "#9098b6", "fps": 49.61, "gflops": 11.5, "id": "proposed_ghost_sppf", "label": "+ GhostConv + SPPF", "latency": 20.17, "map50": 75.32, "map5095": 40.67, "parameters": 4.37, "precision": 78.85, "recall": 68.36, "role": "ablation", "short_label": "Ghost + SPPF"}, {"class_ap": [75.86, 87.37, 61.28, 76.93], "color": "#137e91", "fps": 50.9, "gflops": 11.5, "id": "proposed_ghost_simsppf", "label": "+ GhostConv + SimSPPF", "latency": 19.66, "map50": 75.36, "map5095": 40.71, "parameters": 4.37, "precision": 79.16, "recall": 67.18, "role": "final", "short_label": "Final proposed"}], "provenance": {"class_ap_order": ["holothurian", "echinus", "scallop", "starfish"], "hardware": "NVIDIA GeForce RTX 4060 Laptop GPU", "missing": "Unreported metrics remain null; no zero values are assumed.", "protocol": "Runs 5\u201310 after warm-up; inference and NMS included. FPS is the reported sustained mean, not the reciprocal of rounded mean latency.", "report": "AIT304_AIT2309246_Report.pdf", "report_page": 11, "tables": ["I", "II", "III"], "throughput": "latency_result/*.txt, Sustained Throughput"}}}</script>
+  <script src="/static/vendor/chart.umd.js" defer></script>
+  <script src="/space-config.js" defer></script>
+  <script src="/static/transport.js" defer></script>
+  <script src="/static/app.js" defer></script>
+  <script src="/static/motion.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.3.2/iframeResizer.contentWindow.min.js" async></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="nav-shell glass">
+      <a class="brand" href="#home" aria-label="WAYTECHG home">
+        <img src="/static/logo.svg" width="46" height="46" alt="">
+        <span>WAYTECHG<small>Marine vision lab</small></span>
+      </a>
+      <button class="menu-toggle icon-button" id="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="main-navigation">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+      </button>
+      <nav id="main-navigation" aria-label="Main navigation">
+        <a href="#home" class="active">Home</a>
+        <a href="#about">About</a>
+        <a href="#dashboard">Live demo<span class="nav-dot"></span></a>
+        <a href="#contact" class="nav-contact">Let's talk <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="hero-grid section-wrap">
+        <div class="hero-copy reveal">
+          <p class="eyebrow"><span class="tiny-orbit"></span> MARINE VISION. LIGHTWEIGHT BY DESIGN.</p>
+          <h1 id="hero-title">Intelligence.<br>Below the<br><em>surface.</em></h1>
+          <p class="hero-description">Meet WAYTECHG Marine Organism Detection. A compact deep-learning pipeline built to explore more efficient ways of seeing life on the seafloor.</p>
+          <div class="hero-actions">
+            <a href="#dashboard" class="button button-ocean">Explore the live demo <span aria-hidden="true">↗</span></a>
+            <a href="#about" class="text-link">Behind the research <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="hero-proof">
+            <span class="proof-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 8 4v10l-8 4-8-4V7zm0 0v18M4 7l8 4 8-4"/></svg></span>
+            <p>Built for discovery.<small>AI Engineering · Xiamen University Malaysia</small></p>
+          </div>
+        </div>
+        <div class="hero-art reveal">
+          <div class="ocean-stage" id="ocean-stage">
+            <div class="orbit-ring orbit-ring-one" aria-hidden="true"></div>
+            <div class="orbit-ring orbit-ring-two" aria-hidden="true"></div>
+            <div class="orb-shadow" aria-hidden="true"></div>
+            <div class="depth-scene" id="depth-scene">
+              <div class="diorama-float">
+                <img class="marine-diorama" src="/static/marine-diorama.webp" alt="3D concept illustration of an autonomous underwater vehicle inside a glass ocean sphere, above four marine organisms" width="1280" height="1280" fetchpriority="high">
+              </div>
+              <div class="floating-card species-float">
+                <span class="floating-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 8V4h4m8 0h4v4m0 8v4h-4M8 20H4v-4"/><circle cx="12" cy="12" r="3"/></svg></span>
+                <div><span class="float-label">OUR FOCUS</span><strong>Four species.<br>One ecosystem.</strong></div>
+              </div>
+              <div class="floating-card model-float">
+                <div class="float-heading"><span class="status-dot"></span> FINAL RESEARCH MODEL</div>
+                <div class="float-metric">4.37<span>M</span></div>
+                <div class="float-foot"><span>Parameters</span><span class="metric-saving">↓ 7.02%</span></div>
+                <svg class="mini-wave" viewBox="0 0 150 25" aria-hidden="true"><path d="M0 18C15 18 14 8 30 8S44 22 59 16 74 3 89 8s16 9 30 2 17-6 31-7"/></svg>
+              </div>
+            </div>
+            <span class="illustration-label">3D CONCEPT ART · NOT A DATASET IMAGE</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-bottom section-wrap"><a href="#about" class="scroll-cue"><span aria-hidden="true">↓</span> Dive into the research</a><span>DU-MobileYOLO / GhostConv / SimSPPF</span></div>
+    </section>
+
+    <div class="stats-strip section-wrap reveal" aria-label="Research highlights">
+      <div><strong>04</strong><span>Target organisms</span></div>
+      <div><strong>07</strong><span>Model variants</span></div>
+      <div><strong>7.02<span>%</span></strong><span>Fewer parameters</span></div>
+      <div><strong>75.36<span>%</span></strong><span>Final mAP@0.5</span></div>
+      <p>Reported research results<br><span>Final method vs. DU-MobileYOLO</span></p>
+    </div>
+
+    <section class="section-wrap about-section" id="about" aria-labelledby="about-title">
+      <div class="section-label reveal"><span>01 / THE RESEARCH</span><span class="label-line"></span><span>A lighter way forward</span></div>
+      <div class="about-grid">
+        <div class="reveal">
+          <h2 id="about-title">Less complexity.<br><em>More possibility.</em></h2>
+          <p class="section-description">Underwater scenes are complex. The network doesn't have to be heavy.</p>
+          <a class="text-link dataset-link" href="https://www.kaggle.com/datasets/lywang777/urpc2020" target="_blank" rel="noopener noreferrer">Explore the URPC2020 dataset <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="about-detail reveal">
+          <p>WAYTECHG studies a lightweight deep-learning pipeline for fast object detection of four target aquatic species. The final method combines <strong>GhostConv and SimSPPF</strong> within DU-MobileYOLO to reduce model size and computation while improving reported mAP@0.5.</p>
+          <div class="objective-row"><span class="objective-number">A</span><div><h3>Academic objective</h3><p>Measure the accuracy–efficiency tradeoff through a baseline comparison and controlled module ablations on URPC2020.</p></div></div>
+          <div class="objective-row"><span class="objective-number">B</span><div><h3>Practical objective</h3><p>Explore compact detection for resource-limited marine monitoring and future autonomous underwater vehicle workflows.</p></div></div>
+          <div class="how-to glass"><span aria-hidden="true">↳</span><p><strong>Make yourself at home in the dashboard.</strong> Upload an image to compare the two methods. Check the mode indicator: a local training checkout runs real checkpoints; the standalone public demo uses illustrative boxes. Select chart axes and a model to inspect the measured research metrics.</p></div>
+        </div>
+      </div>
+
+      <div class="specimen-heading reveal"><h3>Four small inhabitants. A shared habitat.</h3><span>ILLUSTRATED REFERENCE PLACEHOLDERS</span></div>
+      <div class="specimen-grid">
+        <article class="specimen-card reveal"><div class="specimen-image"><span>01</span><img src="/static/holothurian.svg" alt="Illustrated holothurian placeholder" loading="lazy"></div><div class="specimen-copy"><h4>Holothurian</h4><p>Sea cucumber</p><span>Reference placeholder</span></div></article>
+        <article class="specimen-card reveal"><div class="specimen-image"><span>02</span><img src="/static/scallop.svg" alt="Illustrated scallop placeholder" loading="lazy"></div><div class="specimen-copy"><h4>Scallop</h4><p>Marine bivalve</p><span>Reference placeholder</span></div></article>
+        <article class="specimen-card reveal"><div class="specimen-image"><span>03</span><img src="/static/echinus.svg" alt="Illustrated echinus placeholder" loading="lazy"></div><div class="specimen-copy"><h4>Echinus</h4><p>Sea urchin</p><span>Reference placeholder</span></div></article>
+        <article class="specimen-card reveal"><div class="specimen-image"><span>04</span><img src="/static/starfish.svg" alt="Illustrated starfish placeholder" loading="lazy"></div><div class="specimen-copy"><h4>Starfish</h4><p>Sea star</p><span>Reference placeholder</span></div></article>
+      </div>
+      <p class="gallery-note">Class illustrations stand in for ground-truth dataset crops. They are not URPC2020 photographs or annotations.</p>
+    </section>
+
+    <section class="dashboard-section" id="dashboard" aria-labelledby="dashboard-title">
+      <div class="section-wrap">
+        <div class="section-label reveal"><span>02 / THE LIVE DASHBOARD</span><span class="label-line"></span><span>Explore. Compare. Understand.</span></div>
+        <div class="section-title-row reveal"><div><h2 id="dashboard-title">Explore the pipeline.<br><em>Find your perspective.</em></h2><p class="section-description">Your image. Two methods. Six models to compare.</p></div><a class="dataset-tag glass" href="https://www.kaggle.com/datasets/lywang777/urpc2020" target="_blank" rel="noopener noreferrer"><span>DATASET</span>URPC2020 <span aria-hidden="true">↗</span></a></div>
+        <div class="dashboard-shell glass reveal">
+          <div class="dashboard-toolbar">
+            <div class="tab-list" role="tablist" aria-label="Dashboard views">
+              <button id="image-tab" class="tab active" role="tab" aria-selected="true" aria-controls="image-panel" data-panel="image-panel">Image lab</button>
+              <button id="metrics-tab" class="tab" role="tab" aria-selected="false" aria-controls="metrics-panel" tabindex="-1" data-panel="metrics-panel">Model tradeoffs</button>
+            </div>
+            <span class="mode-pill"><span class="status-dot"></span><span id="dashboard-mode">Detection simulation</span></span>
+          </div>
+
+          <div id="image-panel" role="tabpanel" aria-labelledby="image-tab">
+            <div class="panel-intro"><div><p class="eyebrow">YOUR IMAGE, TWO PERSPECTIVES</p><h3>Take the pipeline for a swim.</h3></div><span class="panel-counter">4 target classes</span></div>
+            <p class="simulation-note" id="inference-note"><strong>Simulation mode.</strong> Boxes, species labels, and confidence scores are illustrative. This public demo does not execute trained model weights or evaluate the accuracy of your image.</p>
+            <div id="dropzone" class="dropzone" role="group" aria-labelledby="upload-heading">
+              <div class="upload-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m-4 4 4-4 4 4M4 15v5h16v-5"/></svg></div>
+              <div class="dropzone-copy"><h4 id="upload-heading">Drop an image. Discover the workflow.</h4><p>JPG, PNG, or WebP · Up to 8 MB and 20 megapixels</p><p id="file-summary" class="file-summary" hidden></p></div>
+              <input id="image-input" class="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp" aria-label="Choose evaluation image">
+              <button id="browse-button" class="button button-outline" type="button">Choose image <span aria-hidden="true">↗</span></button>
+              <figure id="upload-preview" class="upload-preview" hidden>
+                <img id="upload-image" alt="Selected evaluation image" width="640" height="640">
+                <figcaption>Selected image · 640 × 640 preview</figcaption>
+              </figure>
+            </div>
+            <div class="upload-actions"><div><button id="demo-button" class="text-link" type="button">Use illustrated scene <span aria-hidden="true">↗</span></button><button id="clear-button" class="text-link muted" type="button" hidden>Reset</button></div><button id="analyze-button" class="button button-dark" type="button" disabled>Compare models <span aria-hidden="true">→</span></button></div>
+            <p class="inline-status">Preview appears above. Press Compare models to show results below. Displays are resized to a filled 640 × 640 square; the original image is used for inference.</p>
+            <p id="analysis-status" class="inline-status" role="status" aria-live="polite">Choose your image or try the illustrated scene.</p>
+            <div class="result-controls" id="result-controls" hidden><div class="class-filters" aria-label="Filter detected classes"><button data-class="all" class="filter-chip active" aria-pressed="true">All species</button><button data-class="holothurian" class="filter-chip" aria-pressed="false">Holothurian</button><button data-class="scallop" class="filter-chip" aria-pressed="false">Scallop</button><button data-class="echinus" class="filter-chip" aria-pressed="false">Echinus</button><button data-class="starfish" class="filter-chip" aria-pressed="false">Starfish</button></div><label class="confidence-control" for="confidence-range"><span id="confidence-label">Synthetic score ≥</span> <output id="confidence-value">50%</output><input id="confidence-range" type="range" min="50" max="95" value="50" step="1"></label></div>
+            <div class="comparison-grid" id="comparison-grid">
+              <article class="result-card"><div class="result-heading"><div><span class="model-dot baseline-dot"></span><h4>DU-MobileYOLO</h4><span class="result-tag">Baseline</span></div><span class="detection-count" id="baseline-count">Awaiting comparison</span></div><div class="image-stage"><div id="baseline-placeholder" class="result-placeholder"><strong>Baseline result</strong><span>Choose an image above, then press Compare models.</span></div><img id="baseline-image" alt="Baseline model result" width="640" height="640" hidden><svg id="baseline-overlay" class="detection-overlay" aria-hidden="true"></svg></div><div class="result-footer"><span>4.70M parameters <span aria-hidden="true">·</span> 74.23% mAP@0.5</span><button class="download-button icon-button" data-export="baseline" aria-label="Download baseline simulation image" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12m-4-4 4 4 4-4M4 17v4h16v-4"/></svg></button></div></article>
+              <article class="result-card proposed-card"><div class="result-heading"><div><span class="model-dot proposed-dot"></span><h4>GhostConv + SimSPPF</h4><span class="result-tag">Final proposed</span></div><span class="detection-count" id="proposed-count">Awaiting comparison</span></div><div class="image-stage"><div id="proposed-placeholder" class="result-placeholder"><strong>Final proposed result</strong><span>Choose an image above, then press Compare models.</span></div><img id="proposed-image" alt="Final proposed model result" width="640" height="640" hidden><svg id="proposed-overlay" class="detection-overlay" aria-hidden="true"></svg></div><div class="result-footer"><span>4.37M parameters <span aria-hidden="true">·</span> 75.36% mAP@0.5</span><button class="download-button icon-button" data-export="proposed" aria-label="Download final method simulation image" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12m-4-4 4 4 4-4M4 17v4h16v-4"/></svg></button></div></article>
+            </div>
+            <div class="image-lab-footnote"><span><span class="lock-icon" aria-hidden="true">◇</span> Uploads are processed in memory and are not saved by this app.</span><span>Model metrics are from the offline study.</span></div>
+          </div>
+
+          <div id="metrics-panel" role="tabpanel" aria-labelledby="metrics-tab" hidden>
+            <div class="panel-intro"><div><p class="eyebrow">SIX MODELS. YOUR POINT OF VIEW.</p><h3>Find the balance that matters.</h3></div><button id="download-metrics" class="button button-outline small-button" type="button">Export metrics <span aria-hidden="true">↓</span></button></div>
+            <div class="metric-highlights">
+              
+              <div><span>Highest mAP@0.5 in this comparison</span><strong>75.36<small>%</small></strong><p>Final proposed · reported research result</p></div>
+              <div><span>Smallest parameter count</span><strong>4.37<small>M</small></strong><p>Ghost + SPPF and final proposed · tied</p></div>
+              <div><span>Fastest reported GPU throughput</span><strong>50.90<small>FPS</small></strong><p>Final proposed · RTX 4060 Laptop GPU</p></div>
+            </div>
+            <div class="ablation-overview" aria-labelledby="ablation-title">
+              <div class="comparison-heading">
+                <div><p class="eyebrow">THE COMPLETE STUDY</p><h3 id="ablation-title">Every change, in context.</h3></div>
+                <span class="section-badge">6 models · 4 ablations · 1 final method</span>
+              </div>
+              <p class="comparison-description">Inspect the baseline, four ablation variants, and the final proposed method. Changes below are relative to DU-MobileYOLO; percentage points describe accuracy changes.</p>
+              <div id="ablation-cards" class="ablation-grid" aria-label="Model statistics and differences from baseline"></div>
+            </div>
+            <div class="chart-layout"><div class="chart-area"><div class="axis-controls"><label for="x-axis"><span>X-AXIS</span><select id="x-axis"><option value="parameters">Parameters (M)</option><option value="gflops">GFLOPs</option><option value="map50">mAP@0.5 (%)</option><option value="fps">FPS (GPU)</option><option value="latency">Latency (ms, GPU)</option><option value="map5095">mAP@0.5:0.95 (%)</option><option value="precision">Precision (%)</option><option value="recall">Recall (%)</option></select></label><button id="swap-axes" class="icon-button swap-button" aria-label="Swap chart axes" type="button">⇄</button><label for="y-axis"><span>Y-AXIS</span><select id="y-axis"><option value="map50">mAP@0.5 (%)</option><option value="fps">FPS (GPU)</option><option value="parameters">Parameters (M)</option><option value="gflops">GFLOPs</option><option value="latency">Latency (ms, GPU)</option><option value="map5095">mAP@0.5:0.95 (%)</option><option value="precision">Precision (%)</option><option value="recall">Recall (%)</option></select></label></div><div class="chart-canvas-wrap"><canvas id="tradeoff-chart" role="img" aria-label="Interactive scatter plot of model parameters against mAP at IoU 0.5. Exact values are also available in the model table."></canvas></div><p id="chart-note" class="chart-note" role="status">Select a point or model below to inspect its metrics.</p></div><aside class="model-detail" id="model-detail" aria-label="Selected model metrics"><p class="eyebrow">IN FOCUS</p><h4 id="selected-model-name">Final proposed</h4><p id="selected-model-description">GhostConv + SimSPPF</p><dl id="selected-model-metrics"></dl><p class="detail-note">Reported values, independent of the simulated image lab.</p></aside></div>
+            <div id="model-legend" class="model-legend" aria-label="Choose a model"></div>
+            <div class="bar-comparison" aria-labelledby="bar-title">
+              <div class="comparison-heading">
+                <div><p class="eyebrow">SIDE BY SIDE</p><h3 id="bar-title">Every metric. Every model.</h3></div>
+                <label class="bar-filter" for="bar-metric"><span>SHOW COMPARISON</span><select id="bar-metric"><option value="all">All eight overall metrics</option><option value="map50">mAP@0.5 (%)</option><option value="map5095">mAP@0.5:0.95 (%)</option><option value="parameters">Parameters (M)</option><option value="gflops">GFLOPs</option><option value="fps">FPS (GPU)</option><option value="latency">Latency (ms, GPU)</option><option value="precision">Precision (%)</option><option value="recall">Recall (%)</option><option value="species">All four species AP charts</option><option value="ap_holothurian">Holothurian AP@0.5 (%)</option><option value="ap_echinus">Echinus AP@0.5 (%)</option><option value="ap_scallop">Scallop AP@0.5 (%)</option><option value="ap_starfish">Starfish AP@0.5 (%)</option></select></label>
+              </div>
+              <p class="comparison-description">Bars start at zero and use a shared scale within each metric. Select any row to inspect a model. Missing values stay unreported; FPS and latency are GPU study benchmarks.</p>
+              <div class="bar-selection"><p id="bar-selection-note" role="status" aria-live="polite">Selected: Final proposed.</p><a href="#model-detail" class="text-link">View selected model statistics <span aria-hidden="true">↑</span></a></div>
+              <div id="metric-bars" class="metric-bars" data-view="all"></div>
+            </div>
+            <details class="metrics-table-details"><summary>All model metrics <span aria-hidden="true">+</span></summary><div class="table-scroll" tabindex="0" role="region" aria-label="All six models and reported metrics"><table><caption>Research results · URPC2020 · report Tables I–III</caption><thead><tr><th scope="col">Model</th><th scope="col">mAP@0.5</th><th scope="col">mAP@0.5:0.95</th><th scope="col">Params (M)</th><th scope="col">GFLOPs</th><th scope="col">FPS (GPU)</th><th scope="col">Latency (ms)</th><th scope="col">Precision</th><th scope="col">Recall</th><th scope="col">Holothurian AP@0.5</th><th scope="col">Echinus AP@0.5</th><th scope="col">Scallop AP@0.5</th><th scope="col">Starfish AP@0.5</th></tr></thead><tbody id="metrics-table-body"></tbody></table></div></details>
+            <div class="benchmark-note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v1"/></svg><p>Accuracy and complexity: supplied report, page 11, Tables I–III. FPS: sustained profiling logs, runs 5–10, on an <strong>RTX 4060 Laptop GPU</strong>, including inference and NMS. These are not CPU cloud performance claims. Unreported values remain blank. The final model improves mAP@0.5; mAP@0.5:0.95 is 0.30 percentage points lower than baseline.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-wrap contact-section" id="contact" aria-labelledby="contact-title">
+      <div class="section-label reveal"><span>03 / KEEP THE CONVERSATION FLOWING</span><span class="label-line"></span><span>Ideas welcome</span></div>
+      <div class="contact-grid">
+        <div class="contact-copy reveal"><div class="contact-orbit" aria-hidden="true"><img src="/static/logo.svg" width="76" height="76" alt=""></div><h2 id="contact-title">Good things start<br>with a <em>hello.</em></h2><p class="section-description">Research questions, thoughtful feedback, or a project worth exploring together. I'd love to hear from you.</p><p class="contact-signature">WAYTECHG<span>AI Engineering · Xiamen University Malaysia</span></p></div>
+        <form id="contact-form" class="contact-form glass reveal" method="post" >
+          <div class="form-heading"><h3>Leave a little ripple.</h3><span aria-hidden="true">↗</span></div>
+          <div class="form-row"><label for="contact-name">Your name<input id="contact-name" name="name" type="text" autocomplete="name" placeholder="Alex Morgan" required maxlength="100"></label><label for="contact-email">Your email<input id="contact-email" name="email" type="email" autocomplete="email" placeholder="alex@example.com" required maxlength="254"></label></div>
+          <label for="contact-topic">What's on your mind?<select id="contact-topic" name="topic"><option>Research & collaboration</option><option>Project feedback</option><option>Career opportunity</option><option>Just saying hello</option></select></label>
+          <label for="contact-message">Your message<textarea id="contact-message" name="message" placeholder="Tell me a little about your idea." rows="4" required minlength="10" maxlength="5000"></textarea></label>
+          <div class="honeypot" aria-hidden="true"><label>Leave this field empty<input name="_gotcha" type="text" tabindex="-1" autocomplete="off"></label></div>
+          <input type="hidden" name="_subject" value="WAYTECHG Marine — portfolio inquiry">
+          <p id="contact-delivery-note" class="form-note">This opens a draft in your email app. Press Send there to deliver your message.</p>
+          <p id="contact-status" class="inline-status" role="status" aria-live="polite"></p>
+          <button id="contact-submit" class="button button-dark" type="submit">Open email draft <span aria-hidden="true">↗</span></button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer section-wrap"><a class="brand" href="#home"><img src="/static/logo.svg" alt="" width="38" height="38"><span>WAYTECHG<small>Marine organism detection</small></span></a><p>A little curiosity goes a long way.</p><a class="text-link" href="#home">Back to the surface <span aria-hidden="true">↑</span></a></footer>
+  <div id="toast" class="toast glass" role="status" aria-live="polite" aria-atomic="true" hidden><div class="toast-check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 4 4 10-10"/></svg></div><div><strong id="toast-title"></strong><p id="toast-message"></p></div><button id="toast-close" class="icon-button" type="button" aria-label="Dismiss notification">×</button></div>
+  <noscript><div class="noscript-note">Enable JavaScript to use the image lab and model chart. You can contact Wilbert directly by email.</div></noscript>
+</body>
+</html>
