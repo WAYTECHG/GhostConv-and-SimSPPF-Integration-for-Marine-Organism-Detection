@@ -68,6 +68,16 @@ The proposed model modifies selected computationally redundant parts of DU-Mobil
 ---
 
 
+## Proposed Architecture
+
+The final proposed detector integrates **GhostConv into the Multi-Concat blocks** and **SimSPPF into the pooling stage**, while retaining the original **Deformable Upsampling** mechanism. The diagram shows the backbone, feature fusion network, and detection heads for small, medium, and large objects.
+
+[![Proposed DU-MobileYOLO architecture with GhostConv Multi-Concat blocks, SimSPPF, and Deformable Upsampling](assets/proposed.png)](assets/proposed.png)
+
+*Figure: Proposed DU-MobileYOLO + GhostConv + SimSPPF architecture. Click the image to view it at full resolution.*
+
+---
+
 ## Package Structure
 
 This research package contains source code and configuration files. Dataset images, training output folders, and model weights are excluded. The live demo is hosted separately on Hugging Face Spaces.
